@@ -1,0 +1,127 @@
+{
+    "layer": "top",
+    "position": "top",
+    "spacing": 8,
+    "margin-top": 12,
+    "margin-left": 14,
+    "margin-right": 14,
+    "height": 40,
+    "modules-left": [
+        "custom/logo",
+        "hyprland/workspaces"
+    ],
+    "modules-center": [
+        "clock"
+    ],
+    "modules-right": [
+        "tray",
+        "wireplumber",
+        "network",
+        "bluetooth",
+        "memory",
+        "battery",
+        "custom/power"
+    ],
+    "wlr/taskbar": {
+        "format": "{icon}",
+        "on-click": "activate",
+        "on-click-right": "fullscreen",
+        "icon-theme": "WhiteSur",
+        "icon-size": 25,
+        "tooltip-format": "{title}"
+    },
+    "hyprland/workspaces": {
+        "on-click": "activate",
+        "format": "{icon}",
+        "format-icons": {
+            "default": "",
+            "active": "",
+            "urgent": ""
+        },
+        "persistent-workspaces": {
+            "1": [],
+            "2": [],
+            "3": [],
+            "4": [],
+            "5": []
+        },
+    },
+    "memory": {
+        "interval": 5,
+        "format": "󰍛  {}%",
+        "max-length": 10
+    },
+    "tray": {
+        "spacing": 8
+    },
+    "clock": {
+        "tooltip-format": "{calendar}",
+        "format-alt": "  {:%a, %d %b %Y}",
+        "format": "  {:%I:%M %p}"
+    },
+    "bluetooth": {
+        "format": " {status}",
+        "format-connected": " {device_alias}",
+        "format-connected-battery": " {device_alias} {device_battery_percentage}%",
+        "tooltip-format": "{controller_alias}\t{controller_address}\n\n{num_connections} connected",
+        "tooltip-format-connected": "{controller_alias}\t{controller_address}\n\n{num_connections} connected\n\n{device_enumerate}",
+        "tooltip-format-enumerate-connected": "{device_alias}\t{device_address}",
+        "format-off": "󰂲 Off",
+        "format-disabled": "󰂲 Off",
+        "on-click": "/home/bimbok/.config/waybar/Scripts/bluetooth.sh &"
+    },
+    "network": {
+        "format-wifi": "{icon}",
+        "format-icons": ["󰤯 ", "󰤟 ", "󰤢 ", "󰤥 ", "󰤨 "],
+        "format-ethernet": "󰀂 ",
+        "format-alt": "󱛇 ",
+        "format-disconnected": "󰖪 ",
+        "format-disabled": "󰖪 ",
+        "tooltip-format-wifi": "{icon} {essid}\n⇣{bandwidthDownBytes}  ⇡{bandwidthUpBytes}",
+        "tooltip-format-ethernet": "󰀂  {ifname}\n⇣{bandwidthDownBytes}  ⇡{bandwidthUpBytes}",
+        "tooltip-format-disconnected": "Disconnected",
+        "on-click": "/home/bimbok/.config/waybar/Scripts/wifi.sh &",
+        "on-click-right": "~/.config/rofi/wifi/wifinew.sh &",
+        "interval": 5
+    },
+    "wireplumber": {
+        "format": "{icon} {volume}%",
+        "nospacing": 1,
+        "tooltip-format": "Volume : {volume}%",
+        "format-muted": "󰝟 ",
+        "format-icons": {
+            "headphone": "",
+            "hands-free": "󰂰",
+            "headset": "󰂰",
+            "bluetooth": "󰂰",
+            "default": ["󰖀 ","󰕾 "," "]
+        },
+        "on-click": "pamixer -t",
+        "scroll-step": 1
+    },
+    "custom/logo": {
+        "format": "  ",
+        "tooltip": false,
+        "on-click": "/home/bimbok/.config/waybar/Scripts/theme-change.sh &",
+        "on-click-right": "~/.config/waybar/Scripts/wallpaper_select.sh &",
+    },
+    "battery": {
+        "format": "{icon} {capacity}%",
+        "format-icons": {
+            "charging": ["󰢜 ","󰂆 ","󰂇 ","󰂈 ","󰢝 ","󰂉 ","󰢞 ","󰂊 ","󰂋 ","󰂅 "],
+            "default": ["󰁺","󰁻","󰁼","󰁽","󰁾","󰁿","󰂀","󰂁","󰂂","󰁹"]
+        },
+        "format-full": "Charged ",
+        "interval": 5,
+        "states": {
+            "warning": 20,
+            "critical": 10
+        },
+        "tooltip": true
+    },
+    "custom/power": {
+        "format": "󰤆",
+        "tooltip": false,
+        "on-click": "wlogout"
+    }
+}
