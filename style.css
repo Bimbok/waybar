@@ -161,21 +161,42 @@ window#waybar {
 
 #battery {
   color: @primary;
+  border: 1px solid alpha(@primary, 0.4);
+}
+
+#battery.good {
+  color: @primary;
+  background: alpha(@primary, 0.1);
 }
 
 #battery.charging {
   color: @tertiary;
+  background: alpha(@tertiary, 0.15);
+  border: 1px solid alpha(@tertiary, 0.6);
+  animation: pulse_glow 2s infinite alternate;
 }
 
 #battery.warning {
-  background: @secondary;
-  color: @on_secondary;
+  color: @secondary;
+  background: alpha(@secondary, 0.2);
+  border: 1px solid alpha(@secondary, 0.7);
 }
 
 #battery.critical:not(.charging) {
-  background: @error;
-  color: @on_error;
-  animation: blink 0.5s infinite alternate;
+  color: @error;
+  background: alpha(@error, 0.3);
+  border: 1px solid alpha(@error, 0.8);
+  animation: critical_blink 0.5s infinite alternate;
+}
+
+@keyframes pulse_glow {
+  from { box-shadow: 0 0 2px alpha(@tertiary, 0.2); }
+  to { box-shadow: 0 0 8px alpha(@tertiary, 0.6); }
+}
+
+@keyframes critical_blink {
+  from { background-color: alpha(@error, 0.3); color: @error; }
+  to { background-color: alpha(@error, 0.7); color: @background; }
 }
 
 #custom-power {
@@ -213,12 +234,6 @@ tooltip label {
 #custom-power:hover {
   background: alpha(@surface_container_high, 1);
   border-color: @primary;
+  box-shadow: 0 0 10px alpha(@primary, 0.4);
 }
 
-
-@keyframes blink {
-  to {
-    background-color: alpha(@error, 0.4);
-    color: @on_surface;
-  }
-}

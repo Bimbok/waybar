@@ -158,13 +158,15 @@
             "charging": ["󰢜 ","󰂆 ","󰂇 ","󰂈 ","󰢝 ","󰂉 ","󰢞 ","󰂊 ","󰂋 ","󰂅 "],
             "default": ["󰁺","󰁻","󰁼","󰁽","󰁾","󰁿","󰂀","󰂁","󰂂","󰁹"]
         },
-        "format-full": "Charged ",
+        "format-full": "{icon} {capacity}%",
         "interval": 5,
         "states": {
-            "warning": 20,
-            "critical": 10
+            "good": 95,
+            "warning": 30,
+            "critical": 15
         },
-        "tooltip": true
+        "tooltip": true,
+        "tooltip-format": "{timeTo} {capacity}%"
     },
     "custom/power": {
         "format": "󰤆",
