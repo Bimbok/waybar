@@ -106,7 +106,6 @@ window#waybar {
 #bluetooth,
 #cpu,
 #memory,
-#temperature,
 #battery,
 #custom-power {
   background: alpha(@surface_container, 0.8);
@@ -148,15 +147,6 @@ window#waybar {
 
 #memory {
   color: @tertiary;
-}
-
-#temperature {
-  color: @primary;
-}
-
-#temperature.critical {
-  background: @error;
-  color: @on_error;
 }
 
 #battery {
@@ -229,7 +219,6 @@ tooltip label {
 #bluetooth:hover,
 #cpu:hover,
 #memory:hover,
-#temperature:hover,
 #battery:hover,
 #custom-power:hover {
   background: alpha(@surface_container_high, 1);

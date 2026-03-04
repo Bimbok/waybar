@@ -16,7 +16,7 @@ A polished, glassy Waybar setup that stays fully Matugen-driven for colors. It u
 
 - **Left**: Logo (Theme Switcher), Hyprland Workspaces, MPRIS Media, Cava Visualizer.
 - **Center**: Clock (with Calendar tooltip).
-- **Right**: Tray, Audio, Network, Bluetooth, CPU, Memory, Temperature, Battery, Power.
+- **Right**: Tray, Audio, Network, Bluetooth, CPU, Memory, Battery, Power.
 
 ## Files
 

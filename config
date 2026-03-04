@@ -22,7 +22,6 @@
         "bluetooth",
         "cpu",
         "memory",
-        "temperature",
         "battery",
         "custom/power"
     ],
@@ -83,11 +82,6 @@
             "warning": 70,
             "critical": 90
         }
-    },
-    "temperature": {
-        "critical-threshold": 80,
-        "format": "{icon} {temperatureC}°C",
-        "format-icons": ["", "", "", "", ""]
     },
     "tray": {
         "spacing": 10
