@@ -17,9 +17,29 @@ ascii_max_range = 7
 # Kill any existing cava process
 pkill -f "cava -p $CAVA_CONFIG"
 
-# Run cava and translate its output into bars
-cava -p "$CAVA_CONFIG" | while read -r line; do
-    # Remove semicolons and replace the numeric output with bar characters
-    # 0 -> ' ', 1 -> '▂', etc.
-    echo "$line" | sed "s/;//g; s/0/ /g; s/1/▂/g; s/2/▃/g; s/3/▄/g; s/4/▅/g; s/5/▆/g; s/6/▇/g; s/7/█/g"
-done
+# Run cava and use awk to handle output
+# It will output an empty string (hiding the module) when silent
+cava -p "$CAVA_CONFIG" | awk -F ';' '{
+    # Check if all bars are zero
+    total = 0
+    for (i=1; i<NF; i++) total += $i
+    
+    if (total == 0) {
+        print ""
+    } else {
+        res = ""
+        for (i=1; i<NF; i++) {
+            v = $i
+            if (v == 0) res = res " "
+            else if (v == 1) res = res "▂"
+            else if (v == 2) res = res "▃"
+            else if (v == 3) res = res "▄"
+            else if (v == 4) res = res "▅"
+            else if (v == 5) res = res "▆"
+            else if (v == 6) res = res "▇"
+            else res = res "█"
+        }
+        print res
+    }
+    fflush()
+}'

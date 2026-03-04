@@ -74,6 +74,7 @@ window#waybar {
   border-radius: 20px;
   border: 1px solid alpha(@outline_variant, 0.4);
   color: @secondary;
+  font-size: 12px;
 }
 
 #custom-cava {
@@ -84,6 +85,7 @@ window#waybar {
   border: 1px solid alpha(@outline_variant, 0.4);
   color: @primary;
   font-family: "JetBrainsMono Nerd Font";
+  font-size: 12px;
 }
 
 /* Center styling */

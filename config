@@ -5,7 +5,7 @@
     "margin-top": 8,
     "margin-left": 10,
     "margin-right": 10,
-    "height": 38,
+    "height": 42,
     "modules-left": [
         "custom/logo",
         "hyprland/workspaces",
@@ -49,12 +49,18 @@
         "format-paused": "{status_icon} <i>{title}</i>",
         "player-icons": {
             "default": "▶",
-            "mpv": "🎵"
+            "mpv": "󰕼 ",
+            "spotify": " ",
+            "firefox": " ",
+            "chromium": " ",
+            "brave": "󰖟 ",
+            "vlc": "󰕼 ",
+            "amberol": "󰎆 "
         },
         "status-icons": {
             "paused": "⏸"
         },
-        "max-length": 30
+        "max-length": 20
     },
     "custom/cava": {
         "exec": "/home/bimbok/.config/waybar/Scripts/cava.sh",
@@ -128,9 +134,9 @@
             "bluetooth": "󰂰",
             "default": ["󰖀 ", "󰕾 ", " "]
         },
-        "on-click": "pamixer -t",
-        "on-scroll-up": "pamixer -i 1",
-        "on-scroll-down": "pamixer -d 1",
+        "on-click": "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle",
+        "on-scroll-up": "wpctl set-volume -l 1.5 @DEFAULT_AUDIO_SINK@ 1%+",
+        "on-scroll-down": "wpctl set-volume @DEFAULT_AUDIO_SINK@ 1%-",
         "scroll-step": 1
     },
     "backlight": {
