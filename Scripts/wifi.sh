@@ -1,80 +1,97 @@
 #!/usr/bin/env bash
 
 # --- CONFIGURATION ---
-# Using Rofi as it handles password input better than Wofi
-MENU="rofi -dmenu -i -p Wi-Fi"
+# Using an array for the command to handle arguments and quoting correctly
+ROFI_CMD=("rofi" "-dmenu" "-i" "-p" "Wi-Fi" "-theme-str" "window {width: 25%;} listview {lines: 10;}")
 # ---------------------
 
-notify-send "Wi-Fi" "Scanning for networks..."
+# 1. Get current WiFi status
+WIFI_STATUS=$(nmcli -fields WIFI g | grep -oE "enabled|disabled")
 
-# Get current state
-STATE=$(nmcli -fields WIFI g | grep -oE "enabled|disabled")
-
-if [ "$STATE" = "enabled" ]; then
-  TOGGLE="睊  Disable Wi-Fi"
+if [ "$WIFI_STATUS" = "enabled" ]; then
+    TOGGLE="󰖪  Disable Wi-Fi"
 else
-  TOGGLE="直  Enable Wi-Fi"
+    TOGGLE="󰖩  Enable Wi-Fi"
 fi
 
-# Get list of networks (SSID only, no bars/security)
-# This is the crucial change: we select only the SSID and strip spaces.
-SSID_LIST=$(nmcli --fields "SSID" device wifi list | sed 1d | sed 's/  */ /g' | sort -u | awk '{$1=$1};1')
+# 2. Get the list of networks
+RAW_LIST=$(nmcli --colors no -f "SSID,BARS,SECURITY,ACTIVE" device wifi list | sed 1d)
 
-# Show menu to the user, combining the toggle option and the SSID list
-CHOSEN=$(echo -e "$TOGGLE\n$SSID_LIST" | uniq -u | $MENU)
+LIST=$(echo "$RAW_LIST" | while read -r line; do
+    [[ -z "${line:0:32}" || "${line:0:32}" =~ ^\ *--\ *$ ]] && continue
+    
+    SSID=$(echo "${line:0:32}" | sed 's/ *$//')
+    BARS=$(echo "${line:33:4}" | sed 's/ //g')
+    SEC=$(echo "${line:38:15}" | sed 's/ *$//')
+    ACTIVE=$(echo "${line:54:1}")
+    
+    if [ "$ACTIVE" = "*" ]; then
+        echo "󰄬 $SSID  $BARS  [$SEC]"
+    else
+        echo "  $SSID  $BARS  [$SEC]"
+    fi
+done | sort -u)
+
+# 3. Add extra options
+OPTIONS="󰖂  Manual Entry\n󱚵  Disconnect\n$TOGGLE"
+CHOSEN=$(echo -e "$OPTIONS\n$LIST" | "${ROFI_CMD[@]}")
 
 # Exit if nothing selected
-if [ -z "$CHOSEN" ]; then
-  exit 0
+[ -z "$CHOSEN" ] && exit 0
+
+# 4. Handle Actions
+if [[ "$CHOSEN" == "󰖩  Enable Wi-Fi" ]]; then
+    nmcli radio wifi on
+    notify-send "Wi-Fi" "Enabled"
+    exit 0
+elif [[ "$CHOSEN" == "󰖪  Disable Wi-Fi" ]]; then
+    nmcli radio wifi off
+    notify-send "Wi-Fi" "Disabled"
+    exit 0
+elif [[ "$CHOSEN" == "󱚵  Disconnect" ]]; then
+    ACTIVE_CONN=$(nmcli -t -f ACTIVE,NAME connection show | grep '^yes' | cut -d: -f2)
+    if [ -n "$ACTIVE_CONN" ]; then
+        nmcli connection down "$ACTIVE_CONN"
+        notify-send "Wi-Fi" "Disconnected from $ACTIVE_CONN"
+    else
+        notify-send "Wi-Fi" "No active connection found"
+    fi
+    exit 0
+elif [[ "$CHOSEN" == "󰖂  Manual Entry" ]]; then
+    SSID=$(rofi -dmenu -p "Enter SSID: " -theme-str "window {width: 20%;}")
+    [ -z "$SSID" ] && exit 0
+    PASS=$(rofi -dmenu -password -p "Enter Password (leave empty if open): " -theme-str "window {width: 20%;}")
+    
+    notify-send "Wi-Fi" "Connecting to $SSID..."
+    if [ -z "$PASS" ]; then
+        nmcli device wifi connect "$SSID"
+    else
+        nmcli device wifi connect "$SSID" password "$PASS"
+    fi
+    exit 0
 fi
 
-# Handle Toggles
-if [ "$CHOSEN" = "直  Enable Wi-Fi" ]; then
-  nmcli radio wifi on
-  notify-send "Wi-Fi" "Enabled"
-  exit 0
-elif [ "$CHOSEN" = "睊  Disable Wi-Fi" ]; then
-  nmcli radio wifi off
-  notify-send "Wi-Fi" "Disabled"
-  exit 0
+# 5. Handle Network Selection
+SSID=$(echo "$CHOSEN" | sed 's/^[󰄬 ]*//;s/  .*//')
+
+if echo "$CHOSEN" | grep -q "󰄬"; then
+    notify-send "Wi-Fi" "Already connected to $SSID"
+    exit 0
 fi
 
-# --- Connection Logic ---
-
-# If chosen is a network name, attempt to connect directly using only the name (SSID)
-SSID="$CHOSEN"
-
-# Notify attempt
 notify-send "Wi-Fi" "Connecting to $SSID..."
 
-# Check if connection is already saved
-SAVED=$(nmcli -g NAME connection | grep -w "$SSID")
-
-if [ -n "$SAVED" ]; then
-  # Connect to saved network (nmcli will auto-supply password if saved)
-  if nmcli device wifi connect "$SSID"; then
-    notify-send "Wi-Fi" "Connected to $SSID (Saved)"
-  else
-    notify-send "Wi-Fi" "Failed to connect to saved network."
-  fi
+if nmcli device wifi connect "$SSID" > /dev/null 2>&1; then
+    notify-send "Wi-Fi" "Successfully connected to $SSID"
 else
-  # New network, ask for password via Rofi, assuming WPA/WEP if connection fails first.
-  # We rely on nmcli to prompt for the password via the D-Bus secret service if needed.
-  # If it fails, we assume it needs a password and prompt the user.
-
-  if nmcli device wifi connect "$SSID"; then
-    notify-send "Wi-Fi" "Connected to $SSID (New, Open or Saved Pass)"
-  else
-    # Prompt for password if the initial connection failed (often means password required)
-    PASS=$(wofi -dmenu -password -p "Password for $SSID")
+    PASS=$(rofi -dmenu -password -p "Password for $SSID: " -theme-str "window {width: 20%;}")
     if [ -n "$PASS" ]; then
-      if nmcli device wifi connect "$SSID" password "$PASS"; then
-        notify-send "Wi-Fi" "Connected to $SSID (Password provided)"
-      else
-        notify-send "Wi-Fi" "Failed connection, wrong password or error."
-      fi
+        if nmcli device wifi connect "$SSID" password "$PASS"; then
+            notify-send "Wi-Fi" "Successfully connected to $SSID"
+        else
+            notify-send "Wi-Fi" "Failed to connect to $SSID" -u critical
+        fi
     else
-      notify-send "Wi-Fi" "Connection cancelled."
+        notify-send "Wi-Fi" "Connection cancelled"
     fi
-  fi
 fi
