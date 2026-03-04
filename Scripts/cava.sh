@@ -4,7 +4,7 @@
 CAVA_CONFIG="/tmp/waybar_cava_config"
 echo "
 [general]
-bars = 8
+bars = 10
 sleep_timer = 0
 
 [output]
@@ -12,7 +12,7 @@ method = raw
 raw_target = /dev/stdout
 data_format = ascii
 ascii_max_range = 7
-" > "$CAVA_CONFIG"
+" >"$CAVA_CONFIG"
 
 # Kill any existing cava process
 pkill -f "cava -p $CAVA_CONFIG"

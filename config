@@ -49,7 +49,7 @@
         "format-paused": "{status_icon} <i>{title}</i>",
         "player-icons": {
             "default": "▶",
-            "mpv": "󰕼 ",
+            "mpv": " ",
             "spotify": " ",
             "firefox": " ",
             "chromium": " ",
