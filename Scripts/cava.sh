@@ -4,7 +4,7 @@
 CAVA_CONFIG="/tmp/waybar_cava_config"
 echo "
 [general]
-bars = 10
+bars = 18
 sleep_timer = 0
 
 [output]

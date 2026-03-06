@@ -31,7 +31,7 @@ window#waybar {
   padding: 0 16px;
   border-radius: 20px;
   font-size: 20px;
-  border: 1px solid alpha(@outline_variant, 0.4);
+  border: none;
 }
 
 #workspaces {
@@ -39,7 +39,7 @@ window#waybar {
   margin: 6px 4px;
   padding: 0 4px;
   border-radius: 20px;
-  border: 1px solid alpha(@outline_variant, 0.4);
+  border: none;
 }
 
 #workspaces button {
@@ -52,13 +52,14 @@ window#waybar {
 }
 
 #workspaces button:hover {
-  color: @on_surface;
-  background: alpha(@surface_container_high, 1);
+  color: @primary;
+  background: alpha(@primary, 0.15);
+  padding: 0 12px;
 }
 
 #workspaces button.active {
   color: @on_primary;
-  background: @primary;
+  background: linear-gradient(45deg, @primary, @tertiary);
   min-width: 40px;
 }
 
@@ -72,7 +73,7 @@ window#waybar {
   margin: 6px 4px;
   padding: 0 16px;
   border-radius: 20px;
-  border: 1px solid alpha(@outline_variant, 0.4);
+  border: none;
   color: @secondary;
   font-size: 12px;
 }
@@ -82,7 +83,7 @@ window#waybar {
   margin: 6px 4px;
   padding: 0 12px;
   border-radius: 20px;
-  border: 1px solid alpha(@outline_variant, 0.4);
+  border: none;
   color: @primary;
   font-family: "JetBrainsMono Nerd Font";
   font-size: 12px;
@@ -94,7 +95,7 @@ window#waybar {
   margin: 6px 0;
   padding: 0 20px;
   border-radius: 20px;
-  border: 1px solid alpha(@outline_variant, 0.4);
+  border: none;
   color: @on_surface;
   font-weight: 800;
 }
@@ -112,7 +113,7 @@ window#waybar {
   margin: 6px 4px;
   padding: 0 14px;
   border-radius: 20px;
-  border: 1px solid alpha(@outline_variant, 0.4);
+  border: none;
   color: @on_surface;
   transition: all 0.2s ease;
 }
@@ -223,6 +224,5 @@ tooltip label {
 #custom-power:hover {
   background: alpha(@surface_container_high, 1);
   border-color: @primary;
-  box-shadow: 0 0 10px alpha(@primary, 0.4);
 }
 
