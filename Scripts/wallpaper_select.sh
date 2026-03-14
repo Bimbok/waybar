@@ -33,13 +33,13 @@ FULL_PATH="$WALL_DIR/$SELECTED"
 # 4. Apply the changes
 if [ -f "$FULL_PATH" ]; then
   notify-send "Theme" "Applying $SELECTED..."
-  
+
   # Apply Wallpaper
   swww img "$FULL_PATH" --transition-type grow --transition-fps 60 --transition-pos top-right --transition-duration 2
 
   # Generate Colors
   if command -v matugen &>/dev/null; then
-    matugen image "$FULL_PATH"
+    matugen --old-json-output --source-color-index 0 image "$FULL_PATH"
   fi
 
   # Send Notification

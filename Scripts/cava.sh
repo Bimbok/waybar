@@ -1,17 +1,26 @@
 #!/bin/bash
 
+# Wait for the audio server to initialize on boot
+sleep 2
+
 # Create a temporary config file for cava
 CAVA_CONFIG="/tmp/waybar_cava_config"
 echo "
 [general]
+framerate = 60
 bars = 18
 sleep_timer = 0
+autosens = 1
 
 [output]
 method = raw
 raw_target = /dev/stdout
 data_format = ascii
-ascii_max_range = 7
+ascii_max_range = 8
+
+[smoothing]
+# These parameters are the secret sauce for visual smoothness
+integral = 77
 " >"$CAVA_CONFIG"
 
 # Kill any existing cava process
@@ -23,7 +32,7 @@ cava -p "$CAVA_CONFIG" | awk -F ';' '{
     # Check if all bars are zero
     total = 0
     for (i=1; i<NF; i++) total += $i
-    
+
     if (total == 0) {
         print ""
     } else {

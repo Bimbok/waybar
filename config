@@ -10,7 +10,7 @@
         "custom/logo",
         "hyprland/workspaces",
         "mpris",
-        "custom/cava"
+        "custom/cava",
     ],
     "modules-center": [
         "clock"
@@ -63,7 +63,8 @@
     "custom/cava": {
         "exec": "/home/bimbok/.config/waybar/Scripts/cava.sh",
         "format": "{}",
-        "tooltip": false
+        "tooltip": false,
+        "restart-interval": 2
     },
     "memory": {
         "interval": 5,
@@ -161,7 +162,7 @@
         "tooltip": true,
         "tooltip-format": "{timeTo} {capacity}%"
     },
-    "custom/power": {
+        "custom/power": {
         "format": "󰤆",
         "tooltip": false,
         "on-click": "wlogout"

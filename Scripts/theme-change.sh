@@ -25,11 +25,12 @@ fi
 
 # 4. Apply changes
 notify-send "Theme" "Generating palette..."
-swww img "$RANDOM_WALL" --transition-type grow --transition-fps 60 --transition-pos top-right --transition-duration 2
+swww img "$RANDOM_WALL" --transition-type wave --transition-fps 60 --transition-pos top-right --transition-duration 3
 
 # Generate Colors (Matugen)
 if command -v matugen &>/dev/null; then
-  matugen image "$RANDOM_WALL"
+  # matugen image "$RANDOM_WALL"
+  matugen --old-json-output --source-color-index 0 image "$RANDOM_WALL"
 else
   notify-send "Warning" "matugen not found, colors not updated."
 fi

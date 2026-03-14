@@ -4,7 +4,8 @@
 * {
   border: none;
   border-radius: 0;
-  font-family: "JetBrainsMono Nerd Font", "Roboto", "Helvetica", "Arial", sans-serif;
+  font-family:
+    "JetBrainsMono Nerd Font", "Roboto", "Helvetica", "Arial", sans-serif;
   font-size: 14px;
   font-weight: 700;
   min-height: 0;
@@ -19,7 +20,9 @@ window#waybar {
 }
 
 /* Individual Module Groups styling */
-.modules-left, .modules-center, .modules-right {
+.modules-left,
+.modules-center,
+.modules-right {
   background: transparent;
 }
 
@@ -78,13 +81,27 @@ window#waybar {
   font-size: 12px;
 }
 
+/* #custom-cava { */
+/*   background: alpha(@surface_container, 0.8); */
+/*   margin: 6px 4px; */
+/*   padding: 0 12px; */
+/*   border-radius: 20px; */
+/*   border: none; */
+/*   color: @primary; */
+/*   font-family: "JetBrainsMono Nerd Font"; */
+/*   font-size: 12px; */
+/* } */
+
 #custom-cava {
-  background: alpha(@surface_container, 0.8);
+  background: linear-gradient(90deg, @primary, @tertiary, @secondary);
   margin: 6px 4px;
   padding: 0 12px;
   border-radius: 20px;
   border: none;
-  color: @primary;
+  color: alpha(
+    @surface_container,
+    0.8
+  ); /* This makes the bars dark against the colorful gradient */
   font-family: "JetBrainsMono Nerd Font";
   font-size: 12px;
 }
@@ -138,7 +155,8 @@ window#waybar {
   color: @primary;
 }
 
-#bluetooth.off, #bluetooth.disabled {
+#bluetooth.off,
+#bluetooth.disabled {
   color: alpha(@on_surface_variant, 0.5);
 }
 
@@ -181,13 +199,23 @@ window#waybar {
 }
 
 @keyframes pulse_glow {
-  from { box-shadow: 0 0 2px alpha(@tertiary, 0.2); }
-  to { box-shadow: 0 0 8px alpha(@tertiary, 0.6); }
+  from {
+    box-shadow: 0 0 2px alpha(@tertiary, 0.2);
+  }
+  to {
+    box-shadow: 0 0 8px alpha(@tertiary, 0.6);
+  }
 }
 
 @keyframes critical_blink {
-  from { background-color: alpha(@error, 0.3); color: @error; }
-  to { background-color: alpha(@error, 0.7); color: @background; }
+  from {
+    background-color: alpha(@error, 0.3);
+    color: @error;
+  }
+  to {
+    background-color: alpha(@error, 0.7);
+    color: @background;
+  }
 }
 
 #custom-power {
@@ -212,7 +240,6 @@ tooltip label {
 /* Hover effects */
 #custom-logo:hover,
 #mpris:hover,
-#custom-cava:hover,
 #clock:hover,
 #tray:hover,
 #wireplumber:hover,
@@ -224,5 +251,10 @@ tooltip label {
 #custom-power:hover {
   background: alpha(@surface_container_high, 1);
   border-color: @primary;
+  box-shadow: 0px 0px 12px 2px alpha(@primary, 0.6);
 }
 
+#custom-cava:hover {
+  border-color: @primary;
+  box-shadow: 0px 0px 12px 2px alpha(@primary, 0.6);
+}
