@@ -81,6 +81,30 @@ window#waybar {
   font-size: 12px;
 }
 
+#custom-media-art {
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  border-radius: 8px;
+  margin: 6px 4px;
+  min-width: 30px;
+  transition: all 0.3s ease-in-out, background-image 0s;
+}
+
+#custom-media-art.v1 {
+  background-image: url("/tmp/waybar-media/art1.png");
+}
+
+#custom-media-art.v2 {
+  background-image: url("/tmp/waybar-media/art2.png");
+}
+
+#custom-media-art.hidden {
+  background-image: none;
+  margin: 0;
+  min-width: 0;
+}
+
 /* #custom-cava { */
 /*   background: alpha(@surface_container, 0.8); */
 /*   margin: 6px 4px; */
@@ -239,6 +263,7 @@ tooltip label {
 
 /* Hover effects */
 #custom-logo:hover,
+#custom-media-art:hover,
 #mpris:hover,
 #clock:hover,
 #tray:hover,
@@ -249,9 +274,13 @@ tooltip label {
 #memory:hover,
 #battery:hover,
 #custom-power:hover {
-  background: alpha(@surface_container_high, 1);
+  background-color: alpha(@surface_container_high, 1);
   border-color: @primary;
   box-shadow: 0px 0px 12px 2px alpha(@primary, 0.6);
+}
+
+#custom-media-art:hover {
+  opacity: 0.8;
 }
 
 #custom-cava:hover {

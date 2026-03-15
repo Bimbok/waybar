@@ -8,13 +8,14 @@ A polished, glassy Waybar setup that stays fully Matugen-driven for colors. It u
 
 - **Floating Glass Bar**: Translucent background with a clean border and rounded corners.
 - **Matugen Integration**: Full palette synchronization via `colors.css`.
+- **Media Thumbnails**: Real-time album art display with smooth transitions and status-aware visibility.
 - **Dynamic Battery Tile**: Colorful states (Good, Warning, Critical) with charging glow and detailed tooltips.
 - **Powerful Scripts**: Custom Rofi-based managers for Wi-Fi, Bluetooth, and Wallpapers.
 - **Interactive Feedback**: Smooth transitions, pulsing animations, and hover effects on all modules.
 
 ## Layout Overview
 
-- **Left**: Logo (Theme Switcher), Hyprland Workspaces, MPRIS Media, Cava Visualizer.
+- **Left**: Logo (Theme Switcher), Hyprland Workspaces, **Media Art**, MPRIS Media, Cava Visualizer.
 - **Center**: Clock (with Calendar tooltip).
 - **Right**: Tray, Audio, Network, Bluetooth, CPU, Memory, Battery, Power.
 
@@ -24,6 +25,7 @@ A polished, glassy Waybar setup that stays fully Matugen-driven for colors. It u
 - `style.css`: Visual styling, glass effects, animations, and state overrides.
 - `colors.css`: Matugen-generated palette tokens (Imported by `style.css`).
 - `Scripts/`:
+  - `media-art.py`: Robust Python script for downloading and managing media thumbnails.
   - `wifi.sh`: Advanced Wi-Fi manager with signal strength and manual entry.
   - `bluetooth.sh`: Bluetooth device manager with scanning and easy pairing.
   - `theme-change.sh`: Random wallpaper switcher with Matugen regeneration.
@@ -31,6 +33,14 @@ A polished, glassy Waybar setup that stays fully Matugen-driven for colors. It u
   - `cava.sh`: Script for the Cava audio visualizer.
 
 ## Modules and Behavior
+
+### `custom/media-art` (`media-art.py`)
+- **Visuals**: Displays a 30px square thumbnail with `8px` rounded corners.
+- **Behavior**: 
+  - Automatically hidden when no media is playing or if the player is stopped.
+  - Uses an alternating double-buffer system to ensure Waybar refreshes the image instantly without caching issues.
+  - Tracks both metadata and playback status for perfect accuracy.
+- **Hover**: Subtle opacity shift for interactive feedback.
 
 ### `battery`
 - **Visuals**: Dynamic colors based on capacity (Primary for Good, Secondary for Warning, Error for Critical).
@@ -64,6 +74,7 @@ A polished, glassy Waybar setup that stays fully Matugen-driven for colors. It u
 Required for full functionality:
 
 - **Core**: `waybar`, `hyprland`, `matugen`, `swww`, `rofi`.
+- **Media**: `playerctl`, `python3`.
 - **Networking**: `nmcli` (NetworkManager).
 - **Bluetooth**: `bluetoothctl`, `rfkill`.
 - **Audio/System**: `wireplumber` (wpctl), `brightnessctl`, `wlogout`.
@@ -82,10 +93,12 @@ Required for full functionality:
 
 ## Troubleshooting
 
+- **Media Art Not Showing**: Ensure `playerctl` is installed and that your media player supports MPRIS (e.g., Spotify, VLC, MPV, Firefox with extensions).
 - **Rofi Errors**: If menus fail to open, ensure `rofi` version is 1.7+ (supports `-theme-str`).
 - **Permissions**: Ensure all scripts in `Scripts/` are executable:
   ```sh
   chmod +x ~/.config/waybar/Scripts/*.sh
+  chmod +x ~/.config/waybar/Scripts/*.py
   ```
 - **Wallpaper Issues**: If `swww` fails, the scripts will attempt to start `swww-daemon` automatically. Ensure `swww` is installed.
 - **Empty Menus**: If Bluetooth/Wi-Fi menus are empty, verify the hardware is enabled (`rfkill list`).

@@ -9,8 +9,9 @@
     "modules-left": [
         "custom/logo",
         "hyprland/workspaces",
+        "custom/media-art",
         "mpris",
-        "custom/cava",
+        "custom/cava"
     ],
     "modules-center": [
         "clock"
@@ -41,6 +42,11 @@
             "4": [],
             "5": []
         }
+    },
+    "custom/media-art": {
+        "exec": "/home/bimbok/.config/waybar/Scripts/media-art.py",
+        "format": "{}",
+        "return-type": "json"
     },
     "mpris": {
         "format": "{player_icon} {title}",
