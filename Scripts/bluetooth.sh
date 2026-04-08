@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # --- CONFIGURATION ---
-ROFI_CMD=("rofi" "-dmenu" "-i" "-p" "Bluetooth" "-theme-str" "window {width: 25%;} listview {lines: 10;}")
+ROFI_CMD=("rofi" "-dmenu" "-i" "-p" "Bluetooth" "-theme" "$HOME/.config/rofi/config-network.rasi")
 # ---------------------
 
 # 1. Check Power State

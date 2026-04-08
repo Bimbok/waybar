@@ -1,17 +1,17 @@
 #!/usr/bin/env bash
 
 # 1. Configuration
-DIR="$HOME/arch/walls"
+DIR="$HOME/shared/walls/"
 
 # 2. Check dependencies
-if ! command -v swww &>/dev/null; then
-  notify-send "Error" "swww is not installed."
+if ! command -v awww &>/dev/null; then
+  notify-send "Error" "awww is not installed."
   exit 1
 fi
 
-if ! pgrep -x "swww-daemon" &>/dev/null; then
-  notify-send "Wallpaper" "Starting swww-daemon..."
-  swww-daemon &
+if ! pgrep -x "awww-daemon" &>/dev/null; then
+  notify-send "Wallpaper" "Starting awww-daemon..."
+  awww-daemon &
   sleep 1
 fi
 
@@ -25,12 +25,14 @@ fi
 
 # 4. Apply changes
 notify-send "Theme" "Generating palette..."
-swww img "$RANDOM_WALL" --transition-type wave --transition-fps 60 --transition-pos top-right --transition-duration 3
+awww img "$RANDOM_WALL" --transition-type wave --transition-fps 60 --transition-pos top-right --transition-duration 3
 
 # Generate Colors (Matugen)
 if command -v matugen &>/dev/null; then
   # matugen image "$RANDOM_WALL"
   matugen --old-json-output --source-color-index 0 image "$RANDOM_WALL"
+  ~/.config/waybar/Scripts/reload.sh &
+  disown
 else
   notify-send "Warning" "matugen not found, colors not updated."
 fi

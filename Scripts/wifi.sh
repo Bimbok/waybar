@@ -2,7 +2,7 @@
 
 # --- CONFIGURATION ---
 # Using an array for the command to handle arguments and quoting correctly
-ROFI_CMD=("rofi" "-dmenu" "-i" "-p" "Wi-Fi" "-theme-str" "window {width: 25%;} listview {lines: 10;}")
+ROFI_CMD=("rofi" "-dmenu" "-i" "-p" "Wi-Fi" "-theme" "$HOME/.config/rofi/config-network.rasi")
 # ---------------------
 
 # 1. Get current WiFi status
@@ -58,9 +58,9 @@ elif [[ "$CHOSEN" == "󱚵  Disconnect" ]]; then
     fi
     exit 0
 elif [[ "$CHOSEN" == "󰖂  Manual Entry" ]]; then
-    SSID=$(rofi -dmenu -p "Enter SSID: " -theme-str "window {width: 20%;}")
+    SSID=$(rofi -dmenu -p "Enter SSID: " -theme "$HOME/.config/rofi/config-network.rasi")
     [ -z "$SSID" ] && exit 0
-    PASS=$(rofi -dmenu -password -p "Enter Password (leave empty if open): " -theme-str "window {width: 20%;}")
+    PASS=$(rofi -dmenu -password -p "Enter Password (leave empty if open): " -theme "$HOME/.config/rofi/config-network.rasi")
     
     notify-send "Wi-Fi" "Connecting to $SSID..."
     if [ -z "$PASS" ]; then
@@ -84,7 +84,7 @@ notify-send "Wi-Fi" "Connecting to $SSID..."
 if nmcli device wifi connect "$SSID" > /dev/null 2>&1; then
     notify-send "Wi-Fi" "Successfully connected to $SSID"
 else
-    PASS=$(rofi -dmenu -password -p "Password for $SSID: " -theme-str "window {width: 20%;}")
+    PASS=$(rofi -dmenu -password -p "Password for $SSID: " -theme "$HOME/.config/rofi/config-network.rasi")
     if [ -n "$PASS" ]; then
         if nmcli device wifi connect "$SSID" password "$PASS"; then
             notify-send "Wi-Fi" "Successfully connected to $SSID"

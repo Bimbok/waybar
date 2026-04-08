@@ -9,7 +9,6 @@
     "modules-left": [
         "custom/logo",
         "hyprland/workspaces",
-        "custom/media-art",
         "mpris",
         "custom/cava"
     ],
