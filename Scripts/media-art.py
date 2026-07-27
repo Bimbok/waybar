@@ -1,60 +1,38 @@
 #!/usr/bin/env python3
 
+import json
 import os
 import subprocess
-import json
-import urllib.request
 import time
-import sys
+import urllib.parse
+import urllib.request
 from pathlib import Path
 
-# Paths
 TMP_DIR = Path("/tmp/waybar-media")
 TMP_DIR.mkdir(parents=True, exist_ok=True)
 
-ART_FILES = [TMP_DIR / "art1.png", TMP_DIR / "art2.png"]
-LAST_ART_URL = ""
-LAST_STATUS = ""
-LAST_TITLE = ""
-CURRENT_INDEX = 0
-LAST_CLASS = "v1"
+# Increased buffer pool to 5 to defeat GTK's aggressive CSS image caching
+MAX_BUFFERS = 5
+ART_FILES = [TMP_DIR / f"art{i}.png" for i in range(1, MAX_BUFFERS + 1)]
 
-def get_metadata():
-    try:
-        # Get status, art URL, title, and player name
-        cmd = ["playerctl", "metadata", "--format", "{{status}}|{{mpris:artUrl}}|{{title}}|{{playerName}}"]
-        result = subprocess.run(cmd, capture_output=True, text=True)
-        if result.returncode != 0:
-            return None, None, None, None
-        
-        parts = result.stdout.strip().split("|")
-        if not parts or len(parts) < 1:
-            return None, None, None, None
-            
-        status = parts[0]
-        art_url = parts[1] if len(parts) > 1 else ""
-        title = parts[2] if len(parts) > 2 else "Unknown"
-        player = parts[3] if len(parts) > 3 else "Unknown"
-        
-        return status, art_url, title, player
-    except Exception:
-        return None, None, None, None
+players = {}
+last_emitted_url = ""
+last_emitted_title = ""
+last_emitted_status = ""
+current_index = 0
 
 def download_art(url):
-    global CURRENT_INDEX, LAST_ART_URL, LAST_CLASS
+    global current_index
     if not url:
         return None
-    
-    # If URL is the same, don't re-download and don't swap class
-    if url == LAST_ART_URL and os.path.exists(ART_FILES[1 - CURRENT_INDEX]):
-        return LAST_CLASS
 
-    target = ART_FILES[CURRENT_INDEX]
+    target = ART_FILES[current_index]
     try:
         url_clean = url.strip()
         
         if url_clean.startswith("file://"):
-            src = url_clean[7:]
+            # Decode URL characters (like %20 for spaces) sent by web browsers
+            src = urllib.parse.unquote(url_clean[7:])
             subprocess.run(["cp", src, str(target)], check=True)
         elif url_clean.startswith("http"):
             req = urllib.request.Request(url_clean, headers={'User-Agent': 'Mozilla/5.0'})
@@ -66,79 +44,126 @@ def download_art(url):
             else:
                 return None
         
-        LAST_CLASS = f"v{CURRENT_INDEX + 1}"
-        CURRENT_INDEX = 1 - CURRENT_INDEX
-        LAST_ART_URL = url
-        return LAST_CLASS
+        class_name = f"v{current_index + 1}"
+        # Cycle index for the next download
+        current_index = (current_index + 1) % MAX_BUFFERS
+        return class_name
     except Exception:
         return None
 
-def print_output(status, url, title, player):
-    global LAST_STATUS, LAST_TITLE, LAST_ART_URL
+def get_active_player():
+    if not players:
+        return None
     
-    # If no player or stopped, hide
-    if not status or status.lower() == "stopped":
-        if LAST_STATUS != "stopped":
+    # Priority 1: Pick the most recently updated "Playing" media
+    playing = [p for p in players.values() if p["status"].lower() == "playing"]
+    if playing:
+        return sorted(playing, key=lambda x: x["timestamp"], reverse=True)[0]
+        
+    # Priority 2: Fallback to "Paused" media
+    paused = [p for p in players.values() if p["status"].lower() == "paused"]
+    if paused:
+        return sorted(paused, key=lambda x: x["timestamp"], reverse=True)[0]
+        
+    return None
+
+def print_output():
+    global last_emitted_url, last_emitted_title, last_emitted_status
+    
+    active = get_active_player()
+    
+    # Hide module if nothing is active or everything is stopped
+    if not active or active["status"].lower() in ["stopped", ""]:
+        if last_emitted_status != "stopped":
             print(json.dumps({"text": "", "class": "hidden"}), flush=True)
-            LAST_STATUS = "stopped"
-            LAST_ART_URL = ""
+            last_emitted_status = "stopped"
+            last_emitted_url = ""
         return
 
-    # If no URL, hide
+    status = active["status"]
+    url = active["url"]
+    title = active["title"]
+    player_name = active["player_name"]
+
     if not url:
-        if LAST_STATUS != "no_art":
+        if last_emitted_status != "no_art":
             print(json.dumps({"text": "", "class": "hidden"}), flush=True)
-            LAST_STATUS = "no_art"
-            LAST_ART_URL = ""
+            last_emitted_status = "no_art"
+            last_emitted_url = ""
         return
 
-    # Download or get current class
-    class_name = download_art(url)
-    
-    if class_name:
-        # Only print if something meaningful changed to reduce Waybar overhead
-        if status != LAST_STATUS or url != LAST_ART_URL or title != LAST_TITLE:
-            output = {"text": " ", "class": class_name, "tooltip": f"{title} ({player}) [{status}]"}
+    # Trigger a download and UI refresh only if the URL actually changed
+    if url != last_emitted_url:
+        class_name = download_art(url)
+        if class_name:
+            output = {"text": " ", "class": class_name, "tooltip": f"{title} ({player_name}) [{status}]"}
             print(json.dumps(output), flush=True)
-            LAST_STATUS = status
-            LAST_TITLE = title
+            last_emitted_status = status
+            last_emitted_url = url
+            last_emitted_title = title
+        else:
+            if last_emitted_status != "error":
+                print(json.dumps({"text": "", "class": "hidden"}), flush=True)
+                last_emitted_status = "error"
     else:
-        if LAST_STATUS != "error":
-            print(json.dumps({"text": "", "class": "hidden"}), flush=True)
-            LAST_STATUS = "error"
+        # If the URL is identical but the title/status changed (e.g., pausing the track)
+        if title != last_emitted_title or status != last_emitted_status:
+            prev_index = (current_index - 1) % MAX_BUFFERS
+            output = {"text": " ", "class": f"v{prev_index + 1}", "tooltip": f"{title} ({player_name}) [{status}]"}
+            print(json.dumps(output), flush=True)
+            last_emitted_status = status
+            last_emitted_title = title
 
 def main():
-    # Initial state
-    status, url, title, player = get_metadata()
-    print_output(status, url, title, player)
+    # Initial state fetch
+    # Using ;;; as a delimiter ensures song titles containing pipes (|) don't break the script
+    cmd = ["playerctl", "metadata", "--format", "{{status}};;;{{mpris:artUrl}};;;{{title}};;;{{playerName}}"]
+    try:
+        result = subprocess.run(cmd, capture_output=True, text=True)
+        if result.returncode == 0:
+            parts = result.stdout.strip().split(";;;")
+            if len(parts) >= 4:
+                players[parts[3]] = {
+                    "status": parts[0],
+                    "url": urllib.parse.unquote(parts[1]),
+                    "title": parts[2],
+                    "player_name": parts[3],
+                    "timestamp": time.time()
+                }
+    except Exception:
+        pass
+        
+    print_output()
 
+    # Continuous follow loop
     while True:
         try:
-            # We follow both metadata and status changes
             proc = subprocess.Popen(
-                ["playerctl", "metadata", "--format", "{{status}}|{{mpris:artUrl}}|{{title}}|{{playerName}}", "--follow"],
+                ["playerctl", "metadata", "--format", "{{status}};;;{{mpris:artUrl}};;;{{title}};;;{{playerName}}", "--follow"],
                 stdout=subprocess.PIPE,
                 text=True
             )
             
             for line in proc.stdout:
-                parts = line.strip().split("|")
-                if len(parts) < 1:
+                parts = line.strip().split(";;;")
+                if len(parts) < 4:
                     continue
+                    
+                # Update the state tracker for whichever player emitted an event
+                players[parts[3]] = {
+                    "status": parts[0],
+                    "url": urllib.parse.unquote(parts[1]),
+                    "title": parts[2],
+                    "player_name": parts[3],
+                    "timestamp": time.time()
+                }
                 
-                status = parts[0]
-                url = parts[1] if len(parts) > 1 else ""
-                title = parts[2] if len(parts) > 2 else "Unknown"
-                player = parts[3] if len(parts) > 3 else "Unknown"
-                
-                print_output(status, url, title, player)
+                print_output()
             
             proc.wait()
         except Exception:
             print(json.dumps({"text": "", "class": "hidden"}), flush=True)
             time.sleep(2)
-        
-        time.sleep(1)
 
 if __name__ == "__main__":
     main()

@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+# 1. Ensure full PATH so commands are found even when Waybar runs this
+export PATH="$HOME/.local/bin:$HOME/.cargo/bin:/usr/local/bin:$PATH"
+
 # ==========================================
 # 1. TMUX
 # ==========================================
