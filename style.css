@@ -7,17 +7,19 @@
   font-family:
     "JetBrainsMono Nerd Font", "Roboto", "Helvetica", "Arial", sans-serif;
   font-size: 14px;
-  font-weight: 700;
+  font-weight: 800;
   min-height: 0;
 }
 
+/* Thicker Dynamic Island Base Window Styling */
 window#waybar {
-  background: alpha(@background, 0.7);
+  background: alpha(@background, 0.5);
   color: @on_surface;
-  border: 1px solid alpha(@outline_variant, 0.2);
-  border-radius: 24px;
+  border: 2px solid alpha(@outline_variant, 0.2);
+  border-radius: 32px;
   box-shadow: 0 16px 40px alpha(@background, 0.28);
-  transition: all 0.5s ease-in-out;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  padding: 2px 6px;
 }
 
 /* Individual Module Groups styling */
@@ -27,89 +29,102 @@ window#waybar {
   background: transparent;
 }
 
-/* Left side styling */
+/* Left side styling - Thicker Dynamic Island Modules */
 #custom-logo {
   color: @primary;
-  background: alpha(@surface_container, 0.8);
+  background: alpha(@surface_container_high, 0.75);
   margin: 6px 4px 6px 10px;
   padding: 0 16px;
-  border-radius: 20px;
+  border-radius: 22px;
   font-size: 20px;
-  border: none;
+  border: 1.5px solid alpha(@outline_variant, 0.3);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+#custom-logo:hover {
+  background: @primary;
+  color: @on_primary;
+  border-color: @primary;
+  box-shadow: 0 0 16px alpha(@primary, 0.6);
 }
 
 #workspaces {
-  background: alpha(@surface_container, 0.8);
+  background: alpha(@surface_container_high, 0.65);
   margin: 6px 4px;
   padding: 0 4px;
-  border-radius: 20px;
-  border: none;
+  border-radius: 22px;
+  border: 1.5px solid alpha(@outline_variant, 0.3);
 }
 
 #workspaces button {
-  color: alpha(@on_surface_variant, 0.6);
+  color: alpha(@on_surface_variant, 0.75);
   background: transparent;
-  padding: 0 8px;
-  margin: 4px 2px;
+  padding: 0 10px;
+  margin: 4px 3px;
   border-radius: 18px;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 #workspaces button:hover {
   color: @primary;
-  background: alpha(@primary, 0.15);
+  background: alpha(@primary, 0.22);
   padding: 0 12px;
 }
 
 #workspaces button.active {
   color: @on_primary;
-  background: linear-gradient(45deg, @primary, @tertiary);
+  background: linear-gradient(135deg, @primary, @tertiary);
+  box-shadow: 0 0 12px alpha(@primary, 0.6);
   min-width: 40px;
 }
 
 #workspaces button.urgent {
   color: @on_error;
   background: @error;
+  box-shadow: 0 0 12px alpha(@error, 0.7);
 }
 
 #mpris {
-  background: alpha(@surface_container, 0.8);
+  background: alpha(@surface_container_high, 0.65);
   margin: 6px 4px;
   padding: 0 16px;
-  border-radius: 20px;
-  border: none;
+  border-radius: 22px;
+  border: 1.5px solid alpha(@outline_variant, 0.3);
   color: @secondary;
-  font-size: 12px;
+  font-size: 13px;
+  transition: all 0.3s ease;
+  min-width: 0;
+}
+
+#mpris:hover {
+  background: alpha(@secondary, 0.2);
+  border-color: alpha(@secondary, 0.6);
+  box-shadow: 0 0 14px alpha(@secondary, 0.4);
 }
 
 #custom-media-art {
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  border-radius: 8px;
+  border-radius: 14px;
   margin: 6px 4px;
-  min-width: 30px;
-  transition:
-    all 0.3s ease-in-out,
-    background-image 0s;
+  min-width: 34px;
+  border: 1.5px solid alpha(@outline, 0.35);
+  transition: all 0.3s ease-in-out;
 }
 
 #custom-media-art.v1 {
   background-image: url("/tmp/waybar-media/art1.png");
 }
-
 #custom-media-art.v2 {
   background-image: url("/tmp/waybar-media/art2.png");
 }
-
 #custom-media-art.v3 {
   background-image: url("/tmp/waybar-media/art3.png");
 }
-
 #custom-media-art.v4 {
   background-image: url("/tmp/waybar-media/art4.png");
 }
-
 #custom-media-art.v5 {
   background-image: url("/tmp/waybar-media/art5.png");
 }
@@ -117,123 +132,186 @@ window#waybar {
   background-image: none;
   margin: 0;
   min-width: 0;
+  border: none;
 }
-
-/* #custom-cava { */
-/*   background: alpha(@surface_container, 0.8); */
-/*   margin: 6px 4px; */
-/*   padding: 0 12px; */
-/*   border-radius: 20px; */
-/*   border: none; */
-/*   color: @primary; */
-/*   font-family: "JetBrainsMono Nerd Font"; */
-/*   font-size: 12px; */
-/* } */
 
 #custom-cava {
   background: linear-gradient(90deg, @primary, @tertiary, @secondary);
   margin: 6px 4px;
-  padding: 0 12px;
-  border-radius: 20px;
-  border: none;
-  color: alpha(
-    @surface_container,
-    0.8
-  ); /* This makes the bars dark against the colorful gradient */
+  padding: 0 14px;
+  border-radius: 30px;
+  border: 1.5px solid alpha(@outline_variant, 0.35);
+  color: alpha(@surface_container, 0.85);
   font-family: "JetBrainsMono Nerd Font";
-  font-size: 12px;
+  font-size: 13px;
+  transition: all 0.3s ease;
 }
 
-/* Center styling */
+#custom-cava:hover {
+  border-color: @primary;
+  box-shadow: 0 0 14px alpha(@primary, 0.8);
+}
+
 #clock {
-  background: alpha(@surface_container, 0.8);
-  margin: 6px 0;
-  padding: 0 20px;
-  border-radius: 20px;
-  border: none;
+  background: linear-gradient(
+    135deg,
+    alpha(@surface_container_high, 0.95),
+    alpha(@surface_container, 0.95)
+  );
+  margin: 6px 8px;
+  padding: 0 22px;
+  border-radius: 22px;
+  border: 2px solid alpha(@primary, 0.45);
   color: @on_surface;
+  font-size: 15px;
   font-weight: 800;
+  box-shadow:
+    0 4px 14px alpha(@background, 0.5),
+    inset 0 1px 0 alpha(@outline_variant, 0.5);
+  transition: all 0.3s ease;
 }
 
-/* Right side styling */
+#clock:hover {
+  border-color: @primary;
+  box-shadow: 0 0 18px alpha(@primary, 0.55);
+  color: @primary;
+}
+
+/* Right side styling - Thicker Dynamic Island Modules */
 #tray,
-#wireplumber,
+#hardware {
+  background: transparent;
+  margin: 0;
+  padding: 0;
+  border: none;
+}
+
+#tray,
 #network,
+#wireplumber,
 #bluetooth,
 #cpu,
 #memory,
 #battery,
 #custom-power,
 #custom-autohide {
-  background: alpha(@surface_container, 0.8);
+  background: alpha(@surface_container_high, 0.65);
   margin: 6px 4px;
   padding: 0 14px;
-  border-radius: 20px;
-  border: 1px solid alpha(@outline_variant, 0.18);
+  border-radius: 22px;
+  border: 1.5px solid alpha(@outline_variant, 0.3);
   color: @on_surface;
-  transition: all 0.2s ease;
+  transition: all 0.3s ease;
 }
 
 #tray {
+  color: @primary;
+  border-color: alpha(@primary, 0.3);
   margin-right: 4px;
+  padding: 0 10px;
+}
+
+#tray:hover {
+  background: alpha(@primary, 0.18);
+  border-color: @primary;
+  box-shadow: 0 0 14px alpha(@primary, 0.4);
 }
 
 #wireplumber {
   color: @primary;
+  border-color: alpha(@primary, 0.3);
+}
+
+#wireplumber:hover {
+  background: alpha(@primary, 0.18);
+  border-color: @primary;
+  box-shadow: 0 0 14px alpha(@primary, 0.4);
 }
 
 #network {
   color: @tertiary;
+  border-color: alpha(@tertiary, 0.3);
 }
 
-#network.disconnected {
+#network.disconnected,
+#network.disabled {
   color: @error;
+  border-color: alpha(@error, 0.35);
+}
+
+#network:hover {
+  background: alpha(@tertiary, 0.18);
+  border-color: @tertiary;
+  box-shadow: 0 0 14px alpha(@tertiary, 0.4);
 }
 
 #bluetooth {
-  color: @primary;
+  color: @secondary;
+  border-color: alpha(@secondary, 0.3);
 }
 
 #bluetooth.off,
 #bluetooth.disabled {
   color: alpha(@on_surface_variant, 0.5);
+  border-color: alpha(@outline_variant, 0.2);
+}
+
+#bluetooth:hover {
+  background: alpha(@secondary, 0.18);
+  border-color: @secondary;
+  box-shadow: 0 0 14px alpha(@secondary, 0.4);
 }
 
 #cpu {
-  color: @secondary;
+  color: @primary;
+  border-color: alpha(@primary, 0.25);
+}
+
+#cpu:hover {
+  background: alpha(@primary, 0.18);
+  border-color: @primary;
+  box-shadow: 0 0 14px alpha(@primary, 0.4);
 }
 
 #memory {
   color: @tertiary;
+  border-color: alpha(@tertiary, 0.25);
+}
+
+#memory:hover {
+  background: alpha(@tertiary, 0.18);
+  border-color: @tertiary;
+  box-shadow: 0 0 14px alpha(@tertiary, 0.4);
 }
 
 #battery {
   color: @primary;
-  border: 1px solid alpha(@primary, 0.4);
+  border-color: alpha(@primary, 0.35);
 }
 
 #battery.good {
   color: @primary;
-  background: alpha(@primary, 0.1);
+  background: alpha(@primary, 0.15);
+  border-color: alpha(@primary, 0.4);
 }
 
 #battery.charging {
   color: @tertiary;
-  background: alpha(@tertiary, 0.15);
-  border: 1px solid alpha(@tertiary, 0.6);
+  background: alpha(@tertiary, 0.18);
+  border-color: alpha(@tertiary, 0.65);
   animation: pulse_glow 2s infinite alternate;
 }
 
 #battery.warning {
   color: @secondary;
-  background: alpha(@secondary, 0.2);
-  border: 1px solid alpha(@secondary, 0.7);
+  background: alpha(@secondary, 0.22);
+  border-color: alpha(@secondary, 0.75);
 }
 
 #battery.critical:not(.charging) {
   color: @error;
-  background: alpha(@error, 0.3);
-  border: 1px solid alpha(@error, 0.8);
+  background: alpha(@error, 0.35);
+  border-color: alpha(@error, 0.85);
   animation: critical_blink 0.5s infinite alternate;
 }
 
@@ -242,33 +320,41 @@ window#waybar {
     box-shadow: 0 0 2px alpha(@tertiary, 0.2);
   }
   to {
-    box-shadow: 0 0 8px alpha(@tertiary, 0.6);
+    box-shadow: 0 0 12px alpha(@tertiary, 0.65);
   }
 }
 
 @keyframes critical_blink {
   from {
-    background-color: alpha(@error, 0.3);
+    background-color: alpha(@error, 0.35);
     color: @error;
   }
   to {
-    background-color: alpha(@error, 0.7);
-    color: @background;
+    background-color: alpha(@error, 0.8);
+    color: @on_error;
   }
 }
 
 #custom-power {
   margin-right: 10px;
   color: @error;
+  background: alpha(@error, 0.15);
+  border-color: alpha(@error, 0.35);
   padding: 0 16px;
-  font-size: 18px;
+  font-size: 17px;
+}
+
+#custom-power:hover {
+  background: @error;
+  color: @on_error;
+  border-color: @error;
+  box-shadow: 0 0 16px alpha(@error, 0.55);
 }
 
 #custom-autohide {
-  margin-left: 8px;
-  margin-right: 10px;
-  min-width: 96px;
-  padding: 0 18px;
+  margin-right: 8px;
+  min-width: 86px;
+  padding: 0 16px;
   font-size: 13px;
   font-weight: 800;
   letter-spacing: 0.04em;
@@ -278,11 +364,11 @@ window#waybar {
   color: @on_primary;
   background: linear-gradient(
     135deg,
-    alpha(@primary, 0.92),
-    alpha(@tertiary, 0.85)
+    alpha(@primary, 0.95),
+    alpha(@tertiary, 0.88)
   );
-  border-color: alpha(@primary, 0.28);
-  box-shadow: 0 10px 24px alpha(@primary, 0.16);
+  border-color: alpha(@primary, 0.4);
+  box-shadow: 0 4px 14px alpha(@primary, 0.25);
 }
 
 #custom-autohide.auto.hidden {
@@ -298,46 +384,12 @@ window#waybar {
 
 #custom-autohide.locked {
   color: @on_surface_variant;
-  background: alpha(@surface_container_high, 0.9);
-  border-color: alpha(@outline, 0.34);
+  background: alpha(@surface_container_high, 0.8);
+  border-color: alpha(@outline, 0.3);
 }
 
-/* Tooltip styling */
-tooltip {
-  background: alpha(@background, 0.95);
-  border: 1px solid @outline;
-  border-radius: 16px;
-}
-
-tooltip label {
-  color: @on_surface;
-  padding: 8px;
-}
-
-/* Hover effects */
-#custom-logo:hover,
-#custom-media-art:hover,
-#mpris:hover,
-#clock:hover,
-#tray:hover,
-#wireplumber:hover,
-#network:hover,
-#bluetooth:hover,
-#cpu:hover,
-#memory:hover,
-#battery:hover,
-#custom-power:hover,
 #custom-autohide:hover {
   background-color: alpha(@surface_container_high, 1);
-  border-color: @primary;
-  box-shadow: 0px 0px 12px 2px alpha(@primary, 0.6);
-}
-
-#custom-media-art:hover {
-  opacity: 0.8;
-}
-
-#custom-cava:hover {
   border-color: @primary;
   box-shadow: 0px 0px 12px 2px alpha(@primary, 0.6);
 }
@@ -353,4 +405,44 @@ tooltip label {
 
 #custom-autohide.locked:hover {
   color: @on_surface;
+}
+
+.drawer-power,
+.drawer-hardware,
+.drawer-player {
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.drawer-power *,
+.drawer-hardware *,
+.drawer-player * {
+  transition:
+    opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+    margin 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+    padding 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+#group-power-drawer:not(:hover) .drawer-power,
+#group-hardware:not(:hover) .drawer-hardware,
+#group-player:not(:hover) .drawer-player {
+  opacity: 0;
+}
+
+#group-power-drawer:hover .drawer-power,
+#group-hardware:hover .drawer-hardware,
+#group-player:hover .drawer-player {
+  opacity: 1;
+}
+
+/* Tooltip styling */
+tooltip {
+  background: alpha(@background, 0.8);
+  border: 1.5px solid alpha(@outline, 0.6);
+  border-radius: 18px;
+  /* box-shadow: 0px 10px 40px alpha (#000000, 0.55); */
+}
+
+tooltip label {
+  color: @on_surface;
+  padding: 10px;
 }
